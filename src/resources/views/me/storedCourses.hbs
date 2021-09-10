@@ -1,0 +1,86 @@
+<div class="mt-4">
+    <div class="title-me-courses">
+        <h1>Khoá học của tôi</h1>    
+        <h2 class="mt-2">
+            <a href="../trash/courses">Thùng rác</a>
+        </h2>
+    </div>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Video ID</th>
+                <th scope="col">Created At</th>
+                <th scope="col" colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+            <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>{{this.name}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.videoId}}</td>
+                <td>{{this.createdAt}}</td>
+                <td>
+                    <a href="/courses/{{this._id}}/edit" class="btn btn-dark">Update</a>
+                </td>
+                <td>
+                    <a href="" class="btn btn-dark" data-toggle="modal" data-target="#Course_Del" data-id="{{this._id}}">Delete</a>
+                </td>    
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="6">
+                    <center>Bạn chưa đăng khoá học nào!!!
+                        <div>
+                            <a href="/courses/create">Đăng khoá học ngay</a>
+                        </div>
+                    </center> 
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{!-- Modal --}}
+<div class="modal fade" id="Course_Del" tabindex="-1" aria-labelledby="Course_DelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="Course_DelLabel">Message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to delete?Are you sure you want to delete?
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btn-del-course" class="btn btn-primary" >Yes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </div>
+        </div>
+    </div>
+</div>
+{{!-- Delete Hidden Form --}}
+<form method="POST" name="delete-course-form"></form>
+{{!-- Get data-id btn delete --}}
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        var courseId;
+        var delForm=document.forms['delete-course-form'];
+        $('#Course_Del').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) 
+            courseId= button.data('id')
+            
+        })
+        var btnDelCourse=document.getElementById('btn-del-course');
+        btnDelCourse.onclick=function() {
+            delForm.action=`/courses/${courseId}?_method=DELETE`;
+            delForm.submit();
+        }
+    })
+</script>

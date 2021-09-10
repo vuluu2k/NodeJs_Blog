@@ -1,0 +1,21 @@
+<div class="mt-4">
+    <h3>Sửa khoá học</h3>
+    <form method="POST" action="/courses/{{course._id}}?_method=PUT">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Input name" value="{{course.name}}">
+            <div class="invalid-feedback">
+                Please provide a valid city.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" name="description" placeholder="Input description" value="{{course.description}}">
+        </div>
+        <div class="form-group">
+            <label for="videoId">Video Id</label>
+            <input type="text" class="form-control" id="videoId" name="videoId" placeholder="Input videoId" value="{{course.videoId}}">
+        </div>
+        <button type="submit" class="btn btn-primary">Sửa khoá học</button>
+    </form>
+</div>
