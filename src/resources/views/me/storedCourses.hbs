@@ -1,15 +1,36 @@
-<div class="mt-4">
+<form method="POST" action="/courses/handle-form-actions" class="mt-4 container-form">
     <div class="title-me-courses">
         <h1>Khoá học của tôi</h1>    
         <h2 class="mt-2">
-            <a href="../trash/courses">Thùng rác</a>
+            <a href="../trash/courses">Thùng rác ({{deletedCount}})</a>
         </h2>
+    </div>
+    <div class="d-inline-flex align-items-center mt-5">
+        <div class="form-check flex-grow-2">
+            <input class="form-check-input" type="checkbox" value="" id="check__all">
+            <label class="form-check-label" for="defaultCheck1">
+                Chọn tất cả
+            </label>
+        </div>
+        <div class="m-3 flex-grow-1">
+            <select class="form-control form-control-sm checkbox-all-selection" id="inputGroupSelect02" name="action" required>
+                <option value="" selected>Choose...</option>
+                <option value="delete">Delete</option>
+            </select>
+        </div>
+        <button class="btn btn-primary btn-sm flex-grow-2 btn_run" disabled>Thực hiện</button>
     </div>
     <table class="table mt-4">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
+                <th scope="col"></th>
+                <th scope="col">STT</th>
+                <th scope="col">
+                    Name
+                    <a href="?_sort&col=name&type=asc" class="ml-1 sort_type_href">
+                        <span class="oi oi-elevator"></span>
+                    </a>
+                </th>
                 <th scope="col">Description</th>
                 <th scope="col">Video ID</th>
                 <th scope="col">Created At</th>
@@ -19,6 +40,11 @@
         <tbody>
             {{#each courses}}
             <tr>
+                <th>
+                    <div class="form-check">
+                        <input name="checkbox_children" class="form-check-input" type="checkbox" value="{{this._id}}">
+                    </div>
+                </th>
                 <th scope="row">{{sum @index 1}}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.description}}</td>
@@ -44,7 +70,7 @@
             {{/each}}
         </tbody>
     </table>
-</div>
+</form>
 {{!-- Modal --}}
 <div class="modal fade" id="Course_Del" tabindex="-1" aria-labelledby="Course_DelLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -72,6 +98,11 @@
     document.addEventListener("DOMContentLoaded",function(){
         var courseId;
         var delForm=document.forms['delete-course-form'];
+        var cbAll=$('#check__all');
+        var cbChildren=$('input[name="checkbox_children"]');
+        var btnRun=$('.btn_run');
+        var SortA=$('.sort_type_href');
+        var check=true;
         $('#Course_Del').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) 
             courseId= button.data('id')
@@ -82,5 +113,29 @@
             delForm.action=`/courses/${courseId}?_method=DELETE`;
             delForm.submit();
         }
+        cbAll.change(function() {
+            var isCheckAll=$(this).prop('checked');
+            cbChildren.prop('checked', isCheckAll);
+            btnRun.prop('disabled', !isCheckAll);
+        })
+        cbChildren.change(function() {
+            var isCheck=cbChildren.length===$('input[name="checkbox_children"]:checked').length;
+            var isCheckBtn=$('input[name="checkbox_children"]:checked').length===0;
+            cbAll.prop('checked', isCheck);
+            btnRun.prop('disabled', isCheckBtn);
+        })
+        SortA.click(function() {
+            var type;
+            if(check){
+                type='asc';
+            }
+            else{
+                type='desc';
+            }
+            SortA.attr('href','?_sort&col=name&type='+type);
+        })
     })
 </script>
+        {{!-- btnRun.click(function(e){
+            e.preventDefault();
+        }) --}}

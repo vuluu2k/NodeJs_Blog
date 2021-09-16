@@ -25,7 +25,7 @@
                 <td>{{this.videoId}}</td>
                 <td>{{this.createdAt}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-dark">Restore</a>
+                    <a href="#" class="btn btn-dark btn-restore-course" data-id="{{this._id}}">Restore</a>
                 </td>
                 <td>
                     <a href="" class="btn btn-dark" data-toggle="modal" data-target="#Course_Del" data-id="{{this._id}}">Delete</a>
@@ -62,21 +62,28 @@
     </div>
 </div>
 {{!-- Delete Hidden Form --}}
-<form method="POST" name="delete-course-form"></form>
+<form method="POST" name="par_delete"></form>
+<form method="POST" name="restore-course-form"></form>
 {{!-- Get data-id btn delete --}}
 <script>
     document.addEventListener("DOMContentLoaded",function(){
         var courseId;
-        var delForm=document.forms['delete-course-form'];
+        var delForm=document.forms['par_delete'];
+        var restoreForm=document.forms['restore-course-form'];
         $('#Course_Del').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) 
             courseId= button.data('id')
-            
         })
         var btnDelCourse=document.getElementById('btn-del-course');
         btnDelCourse.onclick=function() {
-            delForm.action=`/courses/${courseId}?_method=DELETE`;
+            delForm.action=`/courses/${courseId}/delete?_method=DELETE`;
             delForm.submit();
         }
+        var btnRestoreCourse=$('.btn-restore-course')
+        btnRestoreCourse.click(function(e) {
+            e.preventDefault();
+            restoreForm.action=`/courses/${$(this).data('id')}/restore?_method=PATCH`;
+            restoreForm.submit();
+        })
     })
 </script>

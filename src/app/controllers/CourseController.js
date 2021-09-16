@@ -23,7 +23,7 @@ class CourseController {
         const course = new Course(formData);
         course
             .save()
-            .then(() => res.redirect('/'))
+            .then(() => res.redirect('/me/stored/courses'))
             .catch(next);
     }
     //[GET] /courses/edit
@@ -48,6 +48,27 @@ class CourseController {
         Course.delete({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
+    }
+    restore(req, res, next) {
+        Course.restore({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+    delete(req, res, next) {
+        Course.deleteOne({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+    handleFormActions(req, res, next) {
+        switch (req.body.action) {
+            case 'delete':
+                Course.delete({ _id: { $in: req.body.checkbox_children } })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            default:
+                res.json({ message: 'Action is invalid' });
+        }
     }
 }
 module.exports = new CourseController();
